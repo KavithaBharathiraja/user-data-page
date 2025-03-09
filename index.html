@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Save User Data</title>
+ <!-- <link rel="stylesheet" href="style.css"> -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function saveData() {
+            let name = document.getElementById("name").value;
+            let email = document.getElementById("email").value;
+            let phone = document.getElementById("phone").value;
+
+            if (name && email && phone) {
+                let users = JSON.parse(localStorage.getItem("userList")) || [];
+                users.push({ name, email, phone });
+                localStorage.setItem("userList", JSON.stringify(users));
+                alert("User saved locally!");
+                document.getElementById("name").value = "";
+                document.getElementById("email").value = "";
+                document.getElementById("phone").value = "";
+            } else {
+                alert("Please enter name, email, and phone.");
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center">
+    <!-- Header -->
+    <header class="w-full bg-gray-800 bg-opacity-90 py-4 px-6 fixed top-0 flex justify-between items-center shadow-lg">
+        <h1 class="text-xl font-bold">User Data Manager</h1>
+        <nav>
+            <a href="view.html" class="text-green-400 hover:text-green-300 mx-2">View Users</a>
+        </nav>
+    </header>
+
+    <!-- Form Section -->
+    <div class="w-full max-w-md mt-20 p-6 bg-gray-800 rounded-lg shadow-xl">
+        <h2 class="text-2xl font-bold text-center mb-4">Save User Data</h2>
+        <input type="text" id="name" placeholder="Enter your name" class="w-full p-2 mb-2 border rounded bg-gray-700 text-white">
+        <input type="email" id="email" placeholder="Enter your email" class="w-full p-2 mb-2 border rounded bg-gray-700 text-white">
+        <input type="tel" id="phone" placeholder="Enter your phone number" class="w-full p-2 mb-2 border rounded bg-gray-700 text-white">
+        <button onclick="saveData()" class="w-full bg-blue-500 hover:bg-blue-600 text-white p-2 rounded">Save</button>
+    </div>
+</body>

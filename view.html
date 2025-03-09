@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Users</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function loadData() {
+            let users = JSON.parse(localStorage.getItem("userList")) || [];
+            let userList = document.getElementById("userList");
+
+            userList.innerHTML = "";
+
+            if (users.length > 0) {
+                users.forEach((user, index) => {
+                    // Create a list item for each user
+                    let listItem = document.createElement("li");
+                    listItem.classList.add("flex", "items-center", "justify-between", "p-2", "border-b", "border-gray-700", "mb-2", "bg-gray-700", "rounded");
+
+                    // Add user number, name, email, and phone number
+                    let userText = document.createElement("span");
+                    userText.textContent = `${index + 1}. ${user.name} - ${user.email} - ${user.phone || 'N/A'}`;
+                    listItem.appendChild(userText);
+
+                    userList.appendChild(listItem);
+                });
+            } else {
+                userList.innerHTML = "<li>No saved data found.</li>";
+            }
+        }
+
+        // Function to delete a user from localStorage
+        function deleteUser(index) {
+            let users = JSON.parse(localStorage.getItem("userList")) || [];
+            users.splice(index, 1); // Remove the user at the given index
+            localStorage.setItem("userList", JSON.stringify(users)); // Save the updated list back to localStorage
+            loadData(); // Reload the user list
+        }
+
+        // Function to open delete user modal
+        function openDeleteUserDialog() {
+            let users = JSON.parse(localStorage.getItem("userList")) || [];
+            let deleteOptions = document.getElementById("deleteOptions");
+            deleteOptions.innerHTML = ''; // Clear previous options
+
+            if (users.length > 0) {
+                users.forEach((user, index) => {
+                    let option = document.createElement("option");
+                    option.value = index;
+                    option.textContent = `${index + 1}. ${user.name} - ${user.email} - ${user.phone || 'N/A'}`;
+                    deleteOptions.appendChild(option);
+                });
+
+                document.getElementById("deleteUserModal").classList.remove("hidden"); // Show modal
+            }
+        }
+
+        // Function to confirm deletion of selected user
+        function deleteSelectedUser() {
+            let selectedUserIndex = document.getElementById("deleteOptions").value;
+            deleteUser(selectedUserIndex);
+            document.getElementById("deleteUserModal").classList.add("hidden"); // Hide modal
+        }
+    </script>
+</head>
+
+<body onload="loadData()" class="bg-gray-900 text-white min-h-screen flex flex-col items-center">
+    <!-- Header with Go Back link and Delete User button -->
+    <header class="w-full bg-gray-800 bg-opacity-90 py-4 px-6 fixed top-0 flex justify-between items-center shadow-lg">
+        <a href="index.html" class="text-blue-400 hover:text-blue-300">Go Back</a>
+        <h1 class="text-xl font-bold">User Data Manager</h1>
+        <button onclick="openDeleteUserDialog()" class="text-red-400 hover:text-red-300">Delete User</button>
+    </header>
+
+    <!-- User List Section -->
+    <div class="w-full max-w-md mt-20 p-6 bg-gray-800 rounded-lg shadow-xl">
+        <h2 class="text-2xl font-bold text-center mb-4">Stored Users</h2>
+        <ul id="userList"></ul>
+    </div>
+
+    <!-- Modal for deleting user -->
+    <div id="deleteUserModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-gray-800 p-6 rounded-lg">
+            <h2 class="text-2xl font-bold text-center mb-4">Delete User</h2>
+            <select id="deleteOptions" class="w-full p-2 mb-4 border rounded bg-gray-700 text-white"></select>
+            <div class="flex justify-between">
+                <button onclick="deleteSelectedUser()" class="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded">Delete</button>
+                <button onclick="document.getElementById('deleteUserModal').classList.add('hidden')" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded">Cancel</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
